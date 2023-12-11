@@ -1,104 +1,33 @@
-from dataclasses import dataclass
-from typing import List
-import numpy as np
-from enum import Enum
-
-
-class Alignment(Enum):
-    CENTER = 0
-    RIGHT = 1
-    LEFT = 3
-
-
-@dataclass
-class Cell:
-    size: int | None = None
-    content: int | None = None
-
-
-@dataclass
-class Header:
-    row: list[Cell]
-
-
-@dataclass
-class Body:
-    rows: list[list[Cell]]
-
-
-class Table:
-    """Custom table just because I can ^-^"""
-
-    # TODO: Reduce memory size of this table, alot of redundant attrs
-    # TODO: Allow table updates by changing the body attr
-
-    def __init__(self, header: Header, body: Body) -> None:
-        self.header = header
-        self.body = body
-
-    def _draw_horizontal_border(self):
-        sized_horizontal_lines = [
-            "{:-<{size}}+".format("", size=cell.size) for cell in self.header.row
-        ]
-        return "".join(["+"] + sized_horizontal_lines)
-
-    def _draw_header_content(self):
-        sizes = []  # we get sizes from column schemas
-        return "".join(
-            ["|"]
-            + [
-                "{:{fill}<{size}}|".format(cell.content, fill=" ", size=cell.size)
-                for cell in self.header.row
-            ]
-            + ["\n"]
-            + ["+"]  # start of the bottom border that uses = instead of -
-            + ["{:=<{size}}+".format("", size=cell.size) for cell in self.header.row]
-        )
-
-    def _draw_body(self):
-        return [
-            "".join(
-                ["|"]
-                + [
-                    "{:{fill}<{size}}|".format(cell.content, fill=" ", size=cell.size)
-                    for cell in row
-                ]
-                + ["\n", self._draw_horizontal_border()]
-            )
-            for row in self.body.rows
-        ]
-
-    def draw_table(self):
-        print(
-            self._draw_horizontal_border(),
-            self._draw_header_content(),
-            *self._draw_body(),
-            sep="\n",
-        )
-
-    @classmethod
-    def draw_from_list(cls, content: List[List[str]]):
-        """Assumes the first array is the header"""
-        cells = np.transpose([[Cell(content=cell) for cell in row] for row in content])
-
-        for col in cells:
-            width = len(max(col, key=lambda a: len(a.content)).content) + 3
-            for cell in col:
-                cell.size = width
-        [head, *rest] = list(np.transpose(cells))
-        table = Table(header=Header(row=head), body=Body(rows=rest))
-        table.draw_table()
-
-    @classmethod
-    def add_row(cls, content: List[List[str]]):
-        """This method expects"""
-        pass
-
+from pytable import Table, Col
 
 if __name__ == "__main__":
-    s = [
-        ["Name", "Org", "Age"],
-        ["Lead Jason", "Med", "23"],
-        ["Ruthy Ljarson", "Eng", "23"],
-    ]
-    Table.draw_from_list(s)
+    Table.columns(
+        Col(name="first_name", label="First name"),
+        Col(name="id", label="ID"),
+        Col(name="dob", label="D.O.Birth"),
+    ).body(
+        [
+            ["Bruce Wayne", "23232", "12/08/1988"],
+            ["Bruce Wayne", "23232", "12/08/1988"],
+            ["Bruce Wayne", "23232", "12/08/1988"],
+        ]
+    ).draw()  # Should draw the table
+
+    Table.body(
+        [
+            ["First Name", "ID", "DOB"],
+            ["Bruce Wayne", "23232", "12/08/1988"],
+            ["Princess Diana of Themyscira", "47568", "12/08/1801"],
+            ["Clark Kent", "23232", "unknown"],
+        ]
+    ).draw()  # Should derive the header from the first row
+
+    Table.body(
+        [
+            ["Bruce Wayne", "23232", "12/08/1988"],
+            ["Bruce Wayne", "23232", "12/08/1988"],
+            ["Bruce Wayne", "23232", "12/08/1988"],
+        ]
+    ).config(
+        headerless=True
+    ).draw()  # Should draw a table without a header
