@@ -2,9 +2,9 @@ from pytable import Table, Col
 
 if __name__ == "__main__":
     Table.columns(
-        Col(name="first_name", label="First name"),
-        Col(name="id", label="ID"),
-        Col(name="dob", label="D.O.Birth"),
+        Col(label="First name"),
+        Col(label="ID"),
+        Col(label="D.O.Birth"),
     ).body(
         [
             ["Bruce Wayne", "23232", "12/08/1988"],

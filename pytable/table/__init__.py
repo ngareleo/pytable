@@ -18,10 +18,8 @@ class Col:
 
     def __init__(
         self,
-        name: str,
         label: str,
     ) -> None:
-        self.name = name
         self.label = label
 
 
@@ -36,6 +34,9 @@ class Body:
 
     def get_col_sizes(self, cols: list[Col]) -> list[Col]:
         pass
+
+    def remove_first_row(self) -> None:
+        self.rows.pop(0)
 
 
 class Table:
@@ -113,9 +114,6 @@ class Table:
         )
 
     def get_configs_from_head(self):
-        if not self.columns:
-            raise ValueError("Headers not defined")
-
         if not self.body:
             raise ValueError("body not provided")
 
@@ -123,6 +121,9 @@ class Table:
         self.columns = [Col(label=col) for col in head]
         for w, col in zip(self._get_col_widths(), self.columns):
             col.width = w
+
+        # remove the first col from body
+        self.body.remove_first_row()
 
     def _get_col_widths(self) -> list[int]:
         """Assumes the first array is the header"""
