@@ -2,11 +2,6 @@ from typing import List, Self
 from pytable.table import Col, Table, Row, Body
 
 
-class TableBuilderExceptions(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
-
-
 class TableBuilder:
     """
     The table module is order specific. You can provide a column schema with columns(Col(...)).
@@ -55,3 +50,4 @@ class TableBuilder:
             cls.table.get_configs_from_head()
 
         cls.table.draw_table()
+        cls.table = Table()
