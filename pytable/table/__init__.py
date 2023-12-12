@@ -13,14 +13,17 @@ class Alignment(Enum):
 
 
 class Col:
-    max_width = 16
-    width = max_width
+    default_max_width = 16
 
     def __init__(
         self,
-        label: str,
+        label: str,  # The label to display on the header
+        width=default_max_width,  # If width is not provided it will not be wider than max-width
+        max_width=default_max_width,  # Max width of a single column, Default behavior is overflow
     ) -> None:
         self.label = label
+        self.width = width
+        self.max_width = max_width
 
 
 class Header:
@@ -39,25 +42,38 @@ class Body:
         self.rows.pop(0)
 
 
+class TableConfigs:
+    max_col_width: str = 20
+
+
 class Table:
-    """
-    The table module is order specific. You can provide a column schema with columns(Col(...)).
-    If no columns are provided, we use the first row as the header of the row. You can override this
-    behavior by using config(headerless=True).
-
-    The body, which is a 2d array of strings should be in the same order as the Col() objects in the header.
-
-    TODO: Later we will allow use of keys and allow users to use dicts instead.
-    """
+    """Internal implementation of table"""
 
     default_limit = 50
 
     def __init__(
-        self, columns: list[Col] = None, body: Body = None, limit=default_limit
+        self,
+        columns: list[Col] = None,
+        body: Body = None,
+        limit=default_limit,
+        **configs,
     ) -> None:
         self.columns = columns
         self.body = body
         self.limit = limit
+        self.config = TableConfigs()
+        self.set_configs_from_kwargs(**configs)
+
+    def set_configs_from_kwargs(self, **configs):
+        for key, value in configs.items():
+            if (
+                key.startswith("__")
+                or key.endswith("__")
+                or key not in self.config.__dir__()
+            ):
+                pass
+
+            self.config.__setattr__(key, value)
 
     def _draw_horizontal_border(self):
         if not self.columns:
@@ -113,7 +129,7 @@ class Table:
             sep="\n",
         )
 
-    def get_configs_from_head(self):
+    def get_cols_configs_from_head(self):
         if not self.body:
             raise ValueError("body not provided")
 
