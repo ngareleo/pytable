@@ -1,9 +1,9 @@
-from pytable import Table, Col
+from pytable import Table, Col, Alignment
 
 if __name__ == "__main__":
     Table.columns(
         Col(label="First name"),
-        Col(label="ID"),
+        Col(label="ID", align=Alignment.CENTER),
         Col(label="D.O.Birth"),
     ).body(
         [
@@ -24,10 +24,10 @@ if __name__ == "__main__":
 
     Table.body(
         [
-            ["Bruce Wayne", "23232", "12/08/1988"],
+            ["First Name", "ID", "DOB"],
             ["Bruce Wayne", "23232", "12/08/1988"],
             ["Bruce Wayne", "23232", "12/08/1988"],
         ]
     ).config(
-        headerless=True
+        headerless=True, max_width=2
     ).draw()  # Should draw a table without a header
