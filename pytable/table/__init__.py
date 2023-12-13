@@ -1,10 +1,11 @@
 import numpy as np
 from enum import Enum
 from typing import TypeVar, Type, Any
-from pytable.utils import notNone
+from functools import reduce
+from pytable.utils import cutAtSpace, notNone
 
 type T = TypeVar("T", str, int, float)
-type Row = Type[list[str]]
+type Row = list[str]
 
 
 class Alignment(Enum):
@@ -127,7 +128,7 @@ class Table:
             for col in self.columns:
                 col.__setattr__(k, v)
 
-    def _draw_horizontal_border(self):
+    def _render_horizontal_border(self):
         if not self.columns:
             raise ValueError("Headers not defined")
 
@@ -138,7 +139,7 @@ class Table:
         ]
         return "".join(["+"] + sized_horizontal_lines)
 
-    def _draw_header_content(self):
+    def _render_header_content(self):
         if not self.columns:
             raise ValueError("Headers not defined")
 
@@ -155,34 +156,50 @@ class Table:
             + ["{:=<{size}}+".format("", size=col.width) for col in self.columns]
         )
 
-    def _draw_body(self):
+    def _render_single_row(self, row: Row):
+        drawable_cells = []
+        rest_cells = []
+        for rule, cell in zip(self.columns, row):
+            drawable, rest = cutAtSpace(cell, rule.width)
+            drawable_cells.append(drawable)
+            rest_cells.append(rest)
+
+        # Look ahead if we need next line
+        will_not_execute_next = (
+            reduce(lambda a, b: a.strip() + b.strip(), rest_cells) == ""
+        )
+        line = "".join(
+            ["|"]
+            + [
+                "{:{fill}{align}{size}}|".format(
+                    cell, fill=" ", size=col.width, align=col.align
+                )
+                for col, cell in zip(self.columns, drawable_cells)
+            ]
+            + ["\n"]
+        )
+
+        if will_not_execute_next:
+            return line + self._render_horizontal_border()
+        else:
+            return line + "\n" + self._render_single_row(rest_cells)
+
+    def _render_body(self):
         if not self.columns:
             raise ValueError("Headers not defined")
 
         if not self.body:
             raise ValueError("body not provided")
 
-        return [
-            "".join(
-                ["|"]
-                + [
-                    "{:{fill}{align}{size}}|".format(
-                        cell, fill=" ", size=col.width, align=col.align
-                    )
-                    for col, cell in zip(self.columns, row)
-                ]
-                + ["\n", self._draw_horizontal_border()]
-            )
-            for row in self.body.rows
-        ]
+        return [self._render_single_row(row) for row in self.body.rows]
 
-    def draw_table(self):
+    def render_table(self):
         header = "".join(
-            [self._draw_horizontal_border(), "\n", self._draw_header_content()]
+            [self._render_horizontal_border(), "\n", self._render_header_content()]
         )
         print(
-            self._draw_horizontal_border() if self.config.headerless else header,
-            *self._draw_body(),
+            self._render_horizontal_border() if self.config.headerless else header,
+            *self._render_body(),
             sep="\n",
         )
 
