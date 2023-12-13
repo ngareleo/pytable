@@ -1,5 +1,6 @@
 from typing import List, Self
 from pytable.table import Col, Table, Row, Body
+from csv import DictReader
 
 
 class TableBuilder:
@@ -64,3 +65,17 @@ class TableBuilder:
             # @leolint: allow this dirty move
             print("\n", cls.table._render_horizontal_border(), "\n\n")
         cls.table = Table()
+
+    @classmethod
+    def from_csv(cls, file_path: str, with_head=False):
+        """Method is like `Table.body()` but reads data from a csv file instead."""
+        from_file = []
+
+        with open(file_path, "r", newline="", encoding="utf-8") as file:
+            reader = DictReader(file)
+
+            for row in reader:
+                from_file.append(dict(row).values())
+
+        cls.table.body = Body(rows=from_file if with_head else from_file[1:])
+        return cls

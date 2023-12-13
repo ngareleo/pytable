@@ -1,0 +1,12 @@
+PatientID,PatientName,Age,Gender,AdmissionDate,DischargeDate,Diagnosis,RoomNumber,TotalCharges,InsuranceStatus
+101,John Doe,45,Male,2023-01-01,2023-01-10,Appendicitis,203,5000.00,Insured
+102,Jane Smith,32,Female,2023-02-05,2023-02-15,Pneumonia,305,8000.00,Uninsured
+103,Robert Johnson,60,Male,2023-03-10,2023-03-20,Heart Attack,402,15000.00,Insured
+104,Susan Brown,28,Female,2023-04-15,2023-04-25,Fractured Leg,101,7000.00,Insured
+105,Michael White,50,Male,2023-05-20,2023-05-30,Stroke,501,12000.00,Uninsured
+106,Linda Miller,42,Female,2023-06-25,2023-07-05,Appendicitis,202,5500.00,Insured
+107,David Wilson,55,Male,2023-07-30,2023-08-09,Respiratory Infection,304,9000.00,Uninsured
+108,Emily Davis,35,Female,2023-09-04,2023-09-14,Kidney Stones,403,10000.00,Insured
+109,Christopher Taylor,48,Male,2023-10-09,2023-10-19,Diabetes,102,7500.00,Insured
+110,Amy Harris,38,Female,2023-11-14,2023-11-24,Appendicitis,502,6000.00,Uninsured
+111,Mark Anderson,44,Male,2023-12-19,2023-12-29,Fractured Arm,201,8500.00,Insured
