@@ -29,3 +29,5 @@ if __name__ == "__main__":
     ).config(
         headerless=True, max_width=2
     ).draw()  # Should draw a table without a header
+
+    Table.from_csv_file("./res/hospital.csv").draw()
