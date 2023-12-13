@@ -52,7 +52,7 @@ class TableBuilder:
         if not cls.table.columns:
             cls.table.get_cols_configs_from_head()
 
-        cls.table.draw_table()
+        cls.table.render_table()
         cls.table = Table()
 
     @classmethod
@@ -62,5 +62,5 @@ class TableBuilder:
         """
         if draw:
             # @leolint: allow this dirty move
-            print("\n", cls.table._draw_horizontal_border(), "\n\n")
+            print("\n", cls.table._render_horizontal_border(), "\n\n")
         cls.table = Table()

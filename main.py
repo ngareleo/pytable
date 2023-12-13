@@ -8,8 +8,6 @@ if __name__ == "__main__":
     ).body(
         [
             ["Bruce Wayne", "23232", "12/08/1988"],
-            ["Bruce Wayne", "23232", "12/08/1988"],
-            ["Bruce Wayne", "23232", "12/08/1988"],
         ]
     ).draw()  # Should draw the table
 
