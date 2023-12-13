@@ -1,6 +1,7 @@
 from typing import List, Self
-from pytable.table import Col, Table, Row, Body
+from pytable.table import Col, DictRow, Table, Row, Body
 from csv import DictReader
+from json import load
 
 
 class TableBuilder:
@@ -24,6 +25,17 @@ class TableBuilder:
         # TODO: Allow adding to rows
         cls.table.body = Body(rows=raw)
         return cls
+
+    def json(cls, raw: list[DictRow], autogen_cols=False ) -> type[Self]:
+        # Convert this object data into arrays
+        if len(raw) == 0:
+            raise ValueError("Passed an empty file")
+        ls = [item.values() for item in raw]
+
+        cls.table.body = Body(rows=ls)
+        if autogen_cols:
+            schema = []
+
 
     @classmethod
     def limit(cls, limit: int) -> type[Self]:
@@ -66,8 +78,10 @@ class TableBuilder:
             print("\n", cls.table._render_horizontal_border(), "\n\n")
         cls.table = Table()
 
+    # TODO: Merge into one function
+
     @classmethod
-    def from_csv(cls, file_path: str, with_head=False):
+    def from_csv_file(cls, file_path: str, with_head=False):
         """Method is like `Table.body()` but reads data from a csv file instead."""
         from_file = []
 
@@ -78,4 +92,12 @@ class TableBuilder:
                 from_file.append(dict(row).values())
 
         cls.table.body = Body(rows=from_file if with_head else from_file[1:])
+        return cls
+
+    @classmethod
+    def read_json_file(cls, file_path):
+        with open(file_path, "r", encoding="utf-8") as json_file:
+            data_list = load(json_file)
+            cls.table.body = Body(rows=data_list)
+
         return cls

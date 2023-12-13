@@ -30,4 +30,4 @@ if __name__ == "__main__":
         headerless=True, max_width=2
     ).draw()  # Should draw a table without a header
 
-    Table.from_csv("./res/hospital.csv").draw()
+    Table.from_csv_file("./res/hospital.csv").draw()
