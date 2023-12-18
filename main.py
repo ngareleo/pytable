@@ -30,4 +30,12 @@ if __name__ == "__main__":
         headerless=True, max_width=2
     ).draw()  # Should draw a table without a header
 
-    Table.from_csv_file("./res/hospital.csv").draw()
+    Table.from_csv_file("./res/contentless.csv").draw()
+    Table.from_csv_file("./res/hospital").columns(
+        Col(label="Name", key="PatientName"),
+        Col(
+            label="Age",
+            key="Age",
+        ),
+        Col(label="Gender", key="Gender"),
+    ).draw()

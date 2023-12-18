@@ -20,6 +20,7 @@ class Col:
     def __init__(
         self,
         label: str,
+        key: str = None,
         width: int = None,
         max_width: int = None,
         align: Alignment = None,
@@ -38,6 +39,7 @@ class Col:
         self._max_width = notNone(max_width, Col.default_max_width)
         self._align = notNone(align, Col.default_align)
         self._width = notNone(width, self._max_width)
+        self.key = key
 
     @property
     def align(self) -> str:

@@ -1,0 +1,9 @@
+We are:
+
+1. Adding support of object data like json
+    - We read the data in dict and convert the dict objects to list objects
+    - Derive the headers from dict keys
+    - User can set Col objects and choose the order, label and columns. 
+
+2. Allow reading from csv
+3. Add table limit

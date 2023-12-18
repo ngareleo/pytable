@@ -15,11 +15,30 @@ class Header:
 
 
 class Body:
-    def __init__(self, rows: list[Row] = None) -> None:
-        self.rows = rows
+    def __init__(self, rows: list[Row] = None, objects: list[DictRow] = None) -> None:
+        self._rows = rows
+        self._objects = objects
 
     def remove_first_row(self) -> None:
         self.rows.pop(0)
+
+    @property
+    def rows(self):
+        if self._rows:
+            return self._rows
+        return [obj.values() for obj in self._objects]
+
+    @rows.setter
+    def rows(self, rows: list[Row]):
+        self._rows = rows
+
+    @property
+    def objects(self):
+        return self._objects
+
+    @objects.setter
+    def objects(self, objects: list[DictRow]):
+        self._objects = objects
 
 
 class TableConfigs:
